@@ -23,8 +23,7 @@ async function completeWithRetry(userText, retriesLeft = 1) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-    try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             signal: controller.signal,
@@ -34,13 +33,9 @@ async function completeWithRetry(userText, retriesLeft = 1) {
                         { text: systemPrompt },
                         { text: `Receipt text: "${userText}"` }
                     ]
-                }],
-                generationConfig: {
-                    responseMimeType: "application/json"
-                }
+                }]
             })
         });
-
         clearTimeout(timeoutId);
 
         if (!response.ok) {
