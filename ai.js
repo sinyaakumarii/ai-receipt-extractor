@@ -1,5 +1,7 @@
+// ai.js
 const { z } = require('zod');
 
+// We define the exact schema we want the AI to return to us
 const ReceiptSchema = z.object({
     merchant: z.string(),
     date: z.string(),
@@ -23,7 +25,8 @@ async function completeWithRetry(userText, retriesLeft = 1) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+    try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             signal: controller.signal,
@@ -36,6 +39,7 @@ async function completeWithRetry(userText, retriesLeft = 1) {
                 }]
             })
         });
+
         clearTimeout(timeoutId);
 
         if (!response.ok) {
